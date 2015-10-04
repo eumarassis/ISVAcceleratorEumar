@@ -1,0 +1,85 @@
+﻿<Page x:Class="Sample.Views.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:Behaviors="using:Template10.Behaviors"
+      xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+      xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+      xmlns:controls="using:Template10.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:Sample.Views"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:vm="using:Sample.ViewModels" mc:Ignorable="d">
+
+    <Page.DataContext>
+        <vm:MainPageViewModel />
+    </Page.DataContext>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="VisualStateNarrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="VisualStateNormal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <controls:PageHeader BackButtonVisibility="Collapsed" Frame="{x:Bind Frame, Mode=OneWay}" Text="Gerenciador de Tarefas (ToDos) "/>
+
+
+        <StackPanel Grid.Row="2">
+
+            <TextBlock  VerticalAlignment="Top" Padding="12,8,0,12" Text="ISV Accelerator - Todo List Eumar" Style="{StaticResource TitleTextBlockStyle}" Margin="18,0"/>
+
+
+            <Grid x:Name="ContentPanel" Margin="18,0,18,0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="125*" />
+                    <ColumnDefinition Width="37*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource BodyTextBlockStyle}" Text="Preencha o campo abaixo e clique em Save para inserir um novo TodoItem no Azure SQL database" TextWrapping="WrapWholeWords" Margin="0,0,-7,0"/>
+                <TextBox Grid.Row="1" Grid.Column="0" Name="TextInput" Text="{Binding NewTodoText, Mode=TwoWay}" Margin="15,0,15,0" />
+                <Button Grid.Row ="1" Grid.Column="1" Name="ButtonSave" Click="{x:Bind ViewModel.ButtonSaveClick}" IsEnabled="{Binding SaveIsEnabled, Mode=TwoWay}" Margin="10,0,10,0">Save</Button>
+                <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource BodyTextBlockStyle}" Text="Clique em Refresh para listar  os itens (Todos) incompletos no Azure SQL Database. Use o checkbox para concluir o item." TextWrapping="Wrap" Margin="0,0,-7,0"/>
+
+                <controls:Resizer Grid.Row="3" Height="32" Width="331" HorizontalAlignment="Left" Grid.ColumnSpan="2" Margin="0,0,-7,0">
+                    <controls:Resizer.Element>
+                        <Button  Name="ButtonRefresh" Click="{x:Bind ViewModel.ButtonRefreshClick}" IsEnabled="{Binding RefreshIsEnabled, Mode=TwoWay}"
+                                Width="331" MinWidth="331"
+                            MinHeight="10" RenderTransformOrigin="0.87,0.547">Refresh</Button>
+                    </controls:Resizer.Element>
+                </controls:Resizer>
+
+                <ListView Grid.Row="4" Grid.ColumnSpan="2" Name="ListItems" ItemsSource="{Binding ItemsSource, Mode=OneWay}" Margin="0,0,-7,0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox Name="CheckBoxComplete" IsChecked="{Binding Complete, Mode=TwoWay}" Checked="CheckBoxComplete_Checked" Content="{Binding Text}" Margin="10,5" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </StackPanel>
+
+    </Grid>
+</Page>
